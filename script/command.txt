@@ -1,0 +1,51 @@
+1，
+ffplay的使用方法，最简单的是直接按照默认格式播放某一个音视频文件或流：
+
+ffplay.exe  -i ../video/IMG_0886.MOV
+
+除此之外，ffplay还支持传入各种参数来控制播放行为。比较常用的参数有：
+
+    -i input_file：输入文件名
+    -x width -y height：控制播放窗口的宽高
+    -t duration：控制播放的时长
+    -window_title title：播放窗口的标题，默认为输入文件名
+    -showmode mode：设置显示模式，0:显示视频;1:显示音频波形；2：显示音频频谱
+    -autoexit：设置视频播放完成后自动退出
+
+其他参数可以参考官网的文档：https://www.ffmpeg.org/ffplay.html或下载包里的文档
+
+2, 
+ffprobe可以提供简单的音视频文件分析功能。最简单的方法同ffplay类似：
+
+ffprobe.exe  -i ../video/IMG_0886.MOV
+
+
+3,
+ 视频转码：ffmpeg.exe可以将视频文件由原格式转换为其他格式，如从avi转为mp4等：
+
+ffmpeg -i ../video/IMG_0886.MOV ../video/output_mpeg4_mp3.avi 
+
+这里，ffmpeg默认将视频编码格式选择为mpeg4，音频转码格式为mp3。如果我们希望保留原始编码，需要增加参数-c copy，表明不做任何转码操作：
+
+ffmpeg -i ../video/IMG_0886.MOV -c copy ../video/output_copy.avi
+
+如果我们希望将视频转换为其他编码格式，则需要在参数中指定目标格式-c:v libx265或-vcodec libx265。ffmpeg支持的所有编码器格式可以通过以下命令查看：
+
+ffmpeg.exe -encoders
+
+实际操作：
+
+ffmpeg -i ../video/IMG_0886.MOV -c:v mjpeg  ../video/output_mjpeg.avi
+
+视频解封装：ffmpeg可以将视频中的音频和视频流分别提取出来。需要在命令行中添加参数-an和-vn，分别表示屏蔽音频和视频流：
+
+@REM 提取视频流
+ffmpeg -i ../video/IMG_0886.MOV -c:v copy -an ../video/IMG_0886_v.MOV
+@REM 提取音频流
+ffmpeg -i ../video/IMG_0886.MOV -c:a copy -vn ../video/IMG_0886_a.aac
+
+视频截取：使用ffmpeg命令并指定参数-ss和-t，分别表示截取开始时刻和截取时长
+
+@REM 视频截取
+ffmpeg -ss 5 -t 5 -i ../video/IMG_0886.MOV -c copy ../video/IMG_0886_cut.MOV
+
