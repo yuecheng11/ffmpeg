@@ -1,3 +1,6 @@
+linux compile code use ffmpeg lib
+gcc simplest_ffmpeg_player.c -g -o smp.out -lSDLmain -lSDL -lavformat -lavcodec -lavutil -lswscale
+
 1，
 ffplay的使用方法，最简单的是直接按照默认格式播放某一个音视频文件或流：
 
