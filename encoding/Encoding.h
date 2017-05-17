@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
+
+#ifdef _32WIN
 extern "C"
 {
 #include "libavformat\avformat.h"
@@ -16,7 +18,26 @@ extern "C"
 #include "libavutil\imgutils.h"
 #include "libavutil\mathematics.h"
 #include "libavutil\samplefmt.h"
+};
+#else
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+#include <libavformat/avformat.h>
+#include <libavutil/opt.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/channel_layout.h>
+#include <libavutil/common.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/mathematics.h>
+#include <libavutil/samplefmt.h>
+#ifdef __cplusplus
 }
+#endif
+#endif
+
 typedef struct
 {
 	FILE* pFin;

@@ -1,5 +1,6 @@
 #include "Error.h"
 #include "Encoding.h"
+
 using namespace std;
 
 //字符串转整形
@@ -33,14 +34,22 @@ int parse_input_parameters(int argc, char** argv, IOPARAM &param)
 
 int open_file(IOPARAM &ioparam)
 {
-	fopen_s(&ioparam.pFin, ioparam.inFileName, "rb");
+
+	#ifdef _WIN32
+	fopen_s(&(ioparam.pFin),ioparam.inFileName, "rb");
+	#else
+	ioparam.pFin = fopen(ioparam.inFileName, "rb");
+	#endif
 	if (!(ioparam.pFin))
 	{
 		fprintf(stderr, "could not open %s\n", ioparam.inFileName);
 		return ERROR_OPEN_FILE;
 	}
-
-	fopen_s(&ioparam.pFout, ioparam.outFileName, "wb");
+	#ifdef _WIN32
+	fopen_s(&(ioparam.pFout),ioparam.outFileName, "wb");
+	#else
+	ioparam.pFout = fopen(ioparam.outFileName, "wb");
+	#endif
 	if (!(ioparam.pFin))
 	{
 		fprintf(stderr, "could not open %s\n", ioparam.outFileName);
@@ -62,14 +71,22 @@ int Read_yuv_data(CodecCtx &ctx, IOPARAM &io_param, int color_plane)
 		//宽度和跨度相等，像素信息连续存放
 		cout << "yueccheng add test,frame height : " << frame_height << "frame width: " << frame_width
 			<< "frame size: " << frame_size << "frame stride: " << frame_stride << endl;
+		#ifdef _WIN32
 		fread_s(ctx.frame->data[color_plane], frame_size, 1, frame_size, io_param.pFin);
+		#else
+		fread(ctx.frame->data[color_plane], frame_size, 1, io_param.pFin);
+		#endif
 	}
 	else
 	{
 		//宽度小于跨度，像素信息保存空间之间存在间隔
 		for (int row_idx = 0; row_idx < frame_height; row_idx++)
 		{
+			#ifdef _WIN32
 			fread_s(ctx.frame->data[color_plane] + row_idx * frame_stride, frame_width, 1, frame_width, io_param.pFin);
+			#else
+			fread(ctx.frame->data[color_plane] + row_idx * frame_stride, frame_width, 1, io_param.pFin);
+			#endif
 		}
 	}
 
